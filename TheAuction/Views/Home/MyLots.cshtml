@@ -1,0 +1,26 @@
+﻿@using CodeFirst
+@model List<Lot>
+@{
+    ViewBag.Title = "MyLots";
+}
+
+@foreach (Lot lot in Model)
+{
+    if (lot.Status == "Active")
+    {
+        @*@Html.Partial(ActiveLot)*@
+    }
+    if (lot.Status == "DeliveryExpected")
+    {
+        @*@Html.Partial(DeliveryExpectedLot)*@
+    }
+    if (lot.Status == "Sold")
+    {
+        @*@Html.Partial(SoldLot)*@
+    }
+    if (lot.Status == "Unclaimed")
+    {
+        @*@Html.Partial(UnclaimedLot)*@
+    }
+
+

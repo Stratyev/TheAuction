@@ -1,0 +1,48 @@
+﻿@using CodeFirst
+@model IEnumerable<AppUser>
+
+@{
+    ViewBag.Title = "ASP.NET Identity";
+}
+
+<div class="panel panel-primary" style="border-color:#B5153A; border-bottom-color:#B5153A;">
+    <div class="panel-heading" style="background-color:#B5153A;">
+        Учетные записи
+    </div>
+    <table class="table table-striped">
+        <tr>
+            <th>Id</th>
+            <th>Дата регистрации</th>
+            <th>Имя</th>
+            <th>Email</th>
+            <th></th>
+        </tr>
+        @if (Model.Count() == 0)
+        {
+            <tr>
+                <td colspan="4" class="text-center">Нет ни одной учетной записи</td>
+            </tr>
+        }
+        else
+        {
+            foreach (AppUser user in Model)
+            {
+                <tr>
+                    <td>@user.Id</td>
+                    <td>@user.Reg_date</td>
+                    <td>@user.UserName</td>
+                    <td>@user.Email</td>
+                    <td>
+                        @using (Html.BeginForm("Delete", "Admin", new { id = user.Id }))
+                        {
+                            @Html.ActionLink("Изменить", "Edit", new { id = user.Id },
+                            new { @class = "btn btn-primary btn-xs", style = "float: left; margin-right: 10px" })
+                            <button class="btn btn-danger btn-xs" type="submit">Удалить</button>
+                        }
+                    </td>
+                </tr>
+            }
+        }
+    </table>
+</div>
+@Html.ActionLink("Создать", "Create", null, new { @class = "btn btn-primary" })

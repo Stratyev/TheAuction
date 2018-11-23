@@ -1,0 +1,172 @@
+﻿
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - My ASP.NET Application</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+
+    @*Это чтобы подключать скрипты не только из _Layout, но и из других представлений, 
+        т.к. Scripts.Render работает только в _Layout. В остальных представлениях надо использовать section (пример в AddCheck)*@
+    @RenderSection("Scripts", false)
+
+    <style>
+        .navbar-brand {
+            padding: 0px;
+        }
+
+            .navbar-brand > img {
+                height: 100%;
+                /*padding: 5px;*/
+                padding-top: 5px;
+                padding-bottom: 6px;
+                width: 130px;
+            }
+
+        .example2 .navbar-brand > img {
+            padding: 7px 15px;
+        }
+
+        .navbar-nav > li > .dropdown-menu {
+            z-index: 9999;
+        }
+
+        .navbar-inverse .navbar-nav > li > a {
+            color: #D8D8D8;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-inverse navbar-fixed-top" style="background-color: #380B61">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar2">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="@Url.Action("IndexLots", "Auction")">
+                    <img src="~/Content/Logo/222.png" alt="Auction">
+                </a>
+            </div>
+            <div id="navbar2" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav navbar-left" style="padding-top: 5px; padding-bottom:0px; padding-left:700px;">
+                    <li>
+                        @*@Html.ActionLink("Вход", "ChooseRole", "Account", null, new { }) <span class="glyphicon glyphicon-log-in" style="font-size: 10px;"> </span>*@
+                        @*<a href="~/Aссount/ChooseRole">Вход <span class="glyphicon glyphicon-log-in" style="font-size: 10px;"> </span></a>*@
+                        <a href="@Url.Action("IndexLots", "Auction")">
+                            Доставка
+                        </a>
+                    </li>
+                    <li>
+                        @*@Html.ActionLink("Вход", "ChooseRole", "Account", null, new { }) <span class="glyphicon glyphicon-log-in" style="font-size: 10px;"> </span>*@
+                        @*<a href="~/Aссount/ChooseRole">Вход <span class="glyphicon glyphicon-log-in" style="font-size: 10px;"> </span></a>*@
+                        <a href="@Url.Action("IndexLots", "Auction")">
+                            О проекте
+                        </a>
+                    </li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right" style="padding-top: 5px;">
+
+                    @{
+                        if (User.Identity.IsAuthenticated == true)
+                        {
+                            bool isInRoleSellers = User.IsInRole("Sellers");
+                            bool isInRoleCustomers = User.IsInRole("Customers");
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                                    @if (isInRoleCustomers == true)
+                                    {
+                                        <span class="glyphicon glyphicon-user" style="font-size: 13px;" aria-hidden="true"></span>
+                                        @*<span class="glyphicon glyphicon-shopping-cart" style="font-size: 12px;" aria-hidden="true"></span>*@
+                                    }
+                                    @if (isInRoleSellers == true)
+                                    {
+                                        <span class="glyphicon glyphicon-user" style="font-size: 13px;" aria-hidden="true"></span>
+                                        @*<span class="glyphicon glyphicon-usd" style="font-size: 12px;" aria-hidden="true"></span>*@
+                                    }
+
+                                    @User.Identity.Name <span class="caret"></span>
+                                </a>
+
+                                <ul class="dropdown-menu" role="menu" style="color:ActiveBorder;">
+                                    @if (isInRoleSellers == true)
+                                    {
+                                        @*@Html.ActionLink("Личный кабинет", "SellerProfile", "Auction", null, new { })*@
+                                        <li>
+                                            <a href="@Url.Action("SellerProfile", "Auction")">
+                                                Личный кабинет продавца
+                                                @*<span class="glyphicon glyphicon-user" style="font-size: 10px;" aria-hidden="true"></span>*@
+                                            </a>
+                                        </li>
+
+                                    }
+                                    @if (isInRoleCustomers == true)
+                                    {
+                                        <li>
+                                            <a href="@Url.Action("CustomerProfile", "Auction")">
+                                                Личный кабинет покупателя
+                                                @*<span class="glyphicon glyphicon-user" style="font-size: 10px;" aria-hidden="true"></span>*@
+                                            </a>
+                                        </li>
+                                    }
+                                    <li class="divider"></li>
+                                    <li>
+                                        <a href="@Url.Action("Logout", "Account")">
+                                            Выйти
+                                            @*<span class="glyphicon glyphicon-log-out" style="font-size: 13px;" aria-hidden="true"></span>*@
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+
+                        }
+                        else
+                        {
+                            <li>
+                                @*@Html.ActionLink("Вход", "ChooseRole", "Account", null, new { }) <span class="glyphicon glyphicon-log-in" style="font-size: 10px;"> </span>*@
+                                @*<a href="~/Aссount/ChooseRole">Вход <span class="glyphicon glyphicon-log-in" style="font-size: 10px;"> </span></a>*@
+                                <a href="@Url.Action("ChooseRole", "Account")">
+                                    Вход
+                                    <span class="glyphicon glyphicon-log-in" style="font-size: 11px;" aria-hidden="true"></span>
+                                </a>
+                            </li>
+                        }
+
+                    }
+
+                </ul>
+            </div>
+            <!--/.nav-collapse -->
+            <!--/.container-fluid -->
+        </div>
+    </nav>
+
+
+    <div class="container body-content" style="padding-top: 10px;">
+        @RenderBody()
+        <hr />
+        <footer>
+            <p>&copy; @DateTime.Now.Year - The Auction</p>
+        </footer>
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/scripts/jquery-1.10.2.min.js")
+    @Scripts.Render("~/scripts/jquery.unobtrusive-ajax.min.js")
+    @Scripts.Render("~/scripts/jquery.validate.min.js")
+    @Scripts.Render("~/scripts/jquery.validate.unobtrusive.min.js")
+    @Scripts.Render("~/scripts/remote-validation.js")
+    @Scripts.Render("~/scripts/jquery.signalR-2.3.0.min.js")
+    @Scripts.Render("~/signalr/hubs")
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/scripts/files-uploading-script.js")
+    @*@Scripts.Render("~/scripts/auto-ajax-submit.js")*@
+    @*<script src="~/scripts/files-uploading-script.js"></script>*@
+</body>
+</html>

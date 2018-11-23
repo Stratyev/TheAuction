@@ -1,0 +1,22 @@
+﻿@using TheAuction.Models
+@using CodeFirst
+@model List<Lot>
+
+
+@foreach (Lot lot in Model)
+{
+    if (lot.Auction_end <= DateTime.Now && lot.Condition.Name == "active")
+    {
+        @*<div id=@($"auto{lot.Lot_id}")>
+            @Html.Partial("AddCheck", lot)
+        </div>*@
+    }
+    else
+    {
+        <div id=@($"res{lot.Lot_id}")>
+            @Html.Partial("newLotCard", lot)
+        </div>
+    }
+}
+
+

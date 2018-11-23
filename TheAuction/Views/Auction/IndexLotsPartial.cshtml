@@ -1,0 +1,63 @@
+﻿@using TheAuction.Models
+@using CodeFirst
+@model List<Lot>
+
+
+@*<h2>Счетчик</h2>
+
+    <div class="main">
+        <div id="loginBlock">
+            Введите логин:<br />
+            <input id="txtUserName" type="text" />
+            <input id="btnLogin" type="button" value="Войти" />
+        </div>
+        <div id="body">
+            <div id="header"></div>
+            <div id="inputForm">
+                <input type="number" id="term" />
+                <input type="button" id="sendmessage" value="Отправить" />
+            </div>
+            <div id="chatroom"></div>
+
+        </div>
+        <input id="hdId" type="hidden" />
+        <input id="username" type="hidden" />
+    </div>*@
+@foreach (Lot lot in Model)
+{
+    if (lot.Winner != null || lot.Condition.Name != "active")
+    {
+
+    }
+    else
+    {
+        <div id=@($"res{lot.Lot_id}")>
+            @Html.Partial("newLotCard", lot)
+            @*<div id="body">
+                <div id="inputForm">
+                    <input type="button" id="sendmessage" value="Отправить" />
+                </div>
+                <div id="chatroom"></div>
+            </div>*@
+        </div>
+        @*if (lot.Auction_end <= DateTime.Now && lot.Condition.Name == "active")
+            {
+                <div id=@($"auto{lot.Lot_id}")>
+                    @Html.Partial("AddCheck", lot)
+                </div>
+            }
+            else
+            {
+                <div id=@($"res{lot.Lot_id}")>
+                    @Html.Partial("newLotCard", lot)
+                </div>
+            }*@
+    }
+}
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<!--Ссылка на библиотеку SignalR -->
+<script src="~/Scripts/jquery.signalR-2.3.0.min.js"></script>
+<!--Ссылка на автоматически сгенерированный скрипт хаба SignalR -->
+<script src="~/signalr/hubs"></script>
+<script src="~/Scripts/update-lot-view.js"></script>
+

@@ -1,0 +1,28 @@
+﻿@model CodeFirst.Figure
+@*<table class="table table-striped">
+    <tr>
+        @Html.DisplayForModel()
+    </tr>
+</table>*@
+
+
+
+        <table class="table table-striped">
+                <tr>
+                    <th>@Html.DisplayNameFor(x => x.Figure_id)</th>
+                    <th>@Html.DisplayNameFor(x => x.Surname)</th>
+                    <th>@Html.DisplayNameFor(x => x.Name)</th>
+                    <th>@Html.DisplayNameFor(x => x.Patronymic)</th>
+                    <th>@Html.DisplayNameFor(x => x.Location)</th>
+                </tr>
+                <tr>
+                    <td>@Html.DisplayFor(x => x.Figure_id)</td>
+                    <td>@Html.DisplayFor(x => x.Surname)</td>
+                    <td>@Html.DisplayFor(x => x.Name)</td>
+                    <td>@Html.DisplayFor(x => x.Patronymic)</td>
+                    <td>@Html.DisplayFor(x => x.Location)</td>
+                </tr>
+
+            </table>
+
+

@@ -1,0 +1,24 @@
+﻿@model TheAuction.Models.LoginViewModel
+@{
+    ViewBag.Title = "Авторизация на сайте";
+}
+
+<h2>Войти</h2>
+
+@Html.ValidationSummary()
+
+@using (Html.BeginForm("Login", "Account", FormMethod.Post, new { @role = "form" }))
+{
+    @Html.AntiForgeryToken();
+    @*<input type="hidden" name="returnUrl" value="@ViewBag.returnUrl" />*@
+    <input type="hidden" name="RoleName" value="@ViewBag.RoleName" />
+    <div class="form-group">
+        <label>Имя</label>
+        @Html.TextBoxFor(x => x.Name, new { @class = "form-control" })
+    </div>
+    <div class="form-group">
+        <label>Пароль</label>
+        @Html.PasswordFor(x => x.Password, new { @class = "form-control" })
+    </div>
+    <button class="btn btn-primary" type="submit">Войти</button>
+}

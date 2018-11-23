@@ -1,0 +1,103 @@
+SellerProfile:
+==============
+@using CodeFirst
+@using TheAuction.Models
+@model SellerLot
+
+<h2>SellerProfile</h2>
+||Профиль||
+
+<br />
+<br />
+
+<div id=@("IndexLots")>
+    @Html.Partial("IndexLotsPartial", Model.Lots)
+</div>
+----------------------------------------------------
+
+
+IndexLotsPartial:
+=================
+@using TheAuction.Models
+@using CodeFirst
+@model List<Lot>
+
+@using (Ajax.BeginForm("SellerProfile", "Auction", new AjaxOptions {HttpMethod = "POST", UpdateTargetId="IndexLots", InsertionMode = InsertionMode.Replace},
+                    new { @role = "form", id = "sellerprofile"}))
+{
+    ViewData["callingMethodName"] = "SellerProfile";
+
+    SelectList selectList = new SelectList(
+            new List<SelectListItem>
+            {
+                new SelectListItem { Text = "Все", Value = "all"},
+                new SelectListItem { Text = "Активные", Value = "active"},
+                new SelectListItem { Text = "Невостребованные", Value = "unclaimed"},
+                new SelectListItem { Text = "Ожидающие оплаты", Value = "payment_expected"},
+                new SelectListItem { Text = "Ожидающие отправки", Value = "shipment_expected"},
+                new SelectListItem { Text = "Отправленные", Value = "shipped"},
+
+            }, "Value", "Text");
+
+    if (Model.Count > 0)
+    {
+            <div class="form-group">
+                @Html.DropDownList("status", selectList, null, new { @class = "form-control", onchange = "document.getElementById('sellerprofile').submit();"})
+            </div>
+            <button style="display: none;" type="submit" class="btn btn-primary">Показать</button>
+
+            if ((string)ViewData["currentStatusName"] == "all")
+            {
+                <h3>Все лоты:</h3>
+            }
+            if ((string)ViewData["currentStatusName"] == "active")
+            {
+                <h3>Лоты, участвующие в торгах:</h3>
+            }
+            if ((string)ViewData["currentStatusName"] == "unclaimed")
+            {
+                <h3>Невостребованные лоты:</h3>
+            }
+            if ((string)ViewData["currentStatusName"] == "payment_expected")
+            {
+                <h3>Лоты, ожидающие оплаты победителем торгов:</h3>
+            }
+            if ((string)ViewData["currentStatusName"] == "shipment_expected")
+            {
+                <h3>Лоты, ожтдающие отправки победителю:</h3>
+            }
+            if ((string)ViewData["currentStatusName"] == "shipped")
+            {
+                <h3>Лоты, отправленные победителю:</h3>
+            }
+        }
+        else
+        {
+            <div class="form-group">
+                @Html.DropDownList("status", selectList, null, new { @class = "form-control", onchange = "document.getElementById('sellerprofile').submit();"})
+            </div>
+            <button style="display: none;" type="submit" class="btn btn-primary">Показать</button>
+
+            <h3>Лотов с таким статусом пока нет</h3>
+        }
+    }
+@foreach (Lot lot in Model)
+{
+    if (lot.Auction_end <= DateTime.Now && lot.Status == "active")
+    {
+        @Html.Partial("AddCheck", lot)
+        <div id=@($"auto{lot.Lot_id}")>
+
+        </div>
+    }
+    else
+    {
+        @Html.Partial("LotCard", lot)
+    }
+}
+----------------------------------------
+
+
+SellerProfile(Method):
+=================
+return PartialView("IndexLotsPartial");

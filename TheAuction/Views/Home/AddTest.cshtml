@@ -1,0 +1,30 @@
+﻿@model TheAuction.Models.AddLotModel
+@{
+    ViewBag.Title = "";
+}
+
+
+
+@Html.ValidationSummary(false)
+@using (Html.BeginForm())
+{
+    <div class="editor-field">
+        <label>Название лота</label>
+        <p> @Html.EditorFor(x => x.Name)</p>
+        @Html.ValidationMessageFor(model => model.Name)
+    </div>
+    <div class="editor-field">
+        <label>Описание</label>
+        <p>@Html.EditorFor(x => x.Description)</p>
+        @Html.ValidationMessageFor(model => model.Description)
+    </div>
+
+    <div class="editor-field">
+        <label>Стартовая ставка</label>
+        <p>@Html.EditorFor(x => x.Start_bet)</p>
+        @Html.ValidationMessageFor(model => model.Start_bet)
+    </div>
+    <button type="submit">Создать</button>
+
+    @Html.ActionLink("Отмена", "Index", null, new { })
+}

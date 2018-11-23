@@ -1,0 +1,562 @@
+﻿@using CodeFirst
+@model CodeFirst.Lot
+<style>
+     /*.border {
+        clear: both;
+        background: #fff;
+        -moz-border-radius: 10px;
+        -webkit-border-radius: 2px;
+        -moz-box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3);
+        -webkit-box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3);
+        z-index: 90;
+    }*/
+    .my-heading{
+        padding: 10px 10px;
+    }
+    .panel-heading{
+        padding: 10px 10px;
+    }
+    .btn-primary{
+        background-color: darkcyan;
+    }
+    .preview{
+        width: 160px;
+    }
+    .images {
+        width: 500px;
+        overflow: hidden;
+        margin: 0 auto;
+    }
+
+        .images a {
+            width: 250px;
+            height: 250px;
+            margin: 0 10px 10px 0;
+            float: left;
+            display: block;
+            box-sizing: border-box;
+            padding: 4px;
+            border: 1px solid #d2d2d2;
+            border-radius: 6px;
+            position: relative;
+        }
+
+            .images a:hover {
+                border-color: #428bcb;
+            }
+
+        .images span {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: block;
+            background-repeat: no-repeat;
+            background-size: contain;
+            background-position: center;
+        }
+        .size {
+    white-space: nowrap; /* Отменяем перенос текста */
+    overflow: hidden; /* Обрезаем содержимое */
+    padding: 5px; /* Поля */
+    text-overflow: ellipsis; /* Многоточие */
+   }
+   .size:hover {
+    background: #f0f0f0; /* Цвет фона */
+    white-space: normal; /* Обычный перенос текста */
+   }
+</style>
+
+@{ 
+    string callingMethodName = (string)ViewData["callingMethodName"];
+
+    string CategoryName = null;
+
+    if (Model.Category.Name == "auto")
+    {
+        CategoryName = "Авто/Мото";
+    }
+    if (Model.Category.Name == "accessories")
+    {
+        CategoryName = "Аксессуары и украшения";
+    }
+    if (Model.Category.Name == "antiques")
+    {
+        CategoryName = "Антиквариат";
+    }
+    if (Model.Category.Name == "musical")
+    {
+        CategoryName = "Музыкальные инструменты";
+    }
+    if (Model.Category.Name == "technique")
+    {
+        CategoryName = "Электроника и быт. техника";
+    }
+    if (Model.Category.Name == "clothes")
+    {
+        CategoryName = "Одежда и обувь";
+    }
+    if (Model.Category.Name == "others")
+    {
+        CategoryName = "Прочее";
+    }
+}
+
+@Html.ValidationSummary()
+@if (Model.Condition.Name == "active" || Model.Condition.Name == "shipment_expected")
+{
+    <div class="container">
+        <div class="row">
+            <div class="col-md-10">
+                <div class="panel panel-info">
+                    <div class="my-heading">
+                        <div class="row">
+                            @if (Model.Condition.Name == "active")
+                            {
+                                <div class="col-md-1">
+                                    @using (Html.BeginForm("EndAuction", "Auction", new { @role = "form" }))
+                                    {
+                                        <div class="form-group">
+                                            @Html.Hidden("lotId", Model.Lot_id, new { @class = "form-control" })
+                                        </div>
+                                        <button style="padding-top: 0px; padding-bottom: 15px;" type="submit" class="btn btn-link">
+                                            <span class="glyphicon glyphicon-remove">
+                                            </span>
+                                        </button>
+                                    }
+                                </div>
+                                <div class="col-md-7">
+                                    @if (Model.Condition.Name == "active")
+                                    {
+
+                                    }
+                                    <font size="5">@Model.Name</font>
+                                    <small>
+                                        <sub style="padding: 10px; font-size: 14px; color: gray;">
+                                            В категории:
+                                            <a href="@Url.Action("IndexLots", "Auction", new { CategoryName = Model.Category.Name })">@CategoryName</a>
+                                        </sub>
+                                    </small>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="col-md-8">
+                                    @if (Model.Condition.Name == "active")
+                                    {
+
+                                    }
+                                    <font size="5">@Model.Name</font>
+                                    <small>
+                                        <sub style="padding: 10px; font-size: 14px; color: gray;">
+                                            В категории:
+                                            <a href="@Url.Action("IndexLots", "Auction", new { CategoryName = Model.Category.Name })">@CategoryName</a>
+                                        </sub>
+                                    </small>
+                                </div>
+                            }
+                            <div class="col-md-4">
+                                @if (Model.Bets_count > 10)
+                                {
+                                    <div style="font-size: 18px; color: indianred;">
+                                        Всего ставок на этот лот: <b>@Model.Bets_count</b>
+                                        <span class="glyphicon glyphicon-fire"> </span>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div style="font-size: 18px; color: darkcyan;">
+                                        Всего ставок на этот лот: <b>@Model.Bets_count</b>
+                                    </div>
+                                }
+
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="col-md-2">
+                                    <img alt="Bootstrap Image Preview" src="@Url.Content(Model.PictureUrl)" style="width:160px;" @*src="http://placehold.it/160x160"*@ />
+                                </div>
+                                <div class="col-md-4" style="padding-left:50px;">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <p class="size" style="color: gray; padding-left: 15px; padding-right: 15px;">
+                                                @Model.Description
+                                            </p>
+                                        </div>
+                                        <p style="padding-left: 15px;">
+                                            <a class="btn" href="#">Подробнее »</a>
+                                        </p>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            @*<br />*@
+                                            <p style="padding-left: 15px; padding-top: 30px;">
+                                                <h2>@Model.Price руб.</h2>
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    @*<br />
+
+                                    <h2>@Model.Price руб.</h2>*@
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="row">
+                                        @*<div class="col-md-6">
+                                            <h5 class="product-name"><strong>Текущая стоимость</strong></h5>
+                                            <h4><small>@Model.Price</small></h4>
+                                        </div>*@
+                                        <div class="col-md-12">
+                                            <div class="product-name"><strong>Дата начала торгов</strong></div>
+                                            <h4><small>@Model.Auction_start.ToShortDateString() @Model.Auction_start.ToLongTimeString()</small></h4>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        @*<div class="col-md-6">
+                                            <h5 class="product-name"><strong>Мин ставка</strong></h5>
+                                            <h4><small>@Model.Min_bet</small></h4>
+                                        </div>*@
+                                        <div class="col-md-12">
+                                            <div class="product-name"><strong>Дата окончания торгов</strong></div>
+                                            <h4><small>@Model.Auction_end.ToShortDateString() @Model.Auction_end.ToLongTimeString()</small></h4>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        @*<div class="col-md-6">
+                                            <h5 class="product-name"><strong>Мин ставка</strong></h5>
+                                            <h4><small>@Model.Min_bet</small></h4>
+                                        </div>*@
+                                        <div class="col-md-12">
+                                            <div class="product-name"><strong>Город</strong></div>
+
+                                            <h4><small>@Model.Location.Name</small></h4>
+                                        </div>
+                                    </div>
+                                    @*<div class="col-md-6">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <h5 class="product-name"><strong>Текущая стоимость</strong></h5>
+                                                <h4><small>@Model.Price</small></h4>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <h5 class="product-name"><strong>Мин ставка</strong></h5>
+                                                <h4><small>@Model.Min_bet</small></h4>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <h5 class="product-name"><strong>Дата начала торгов</strong></h5>
+                                                <h4><small>@Model.Auction_start</small></h4>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <h5 class="product-name"><strong>Дата окончания торгов</strong></h5>
+                                                <h4><small>@Model.Auction_end</small></h4>
+                                            </div>
+                                        </div>
+                                    </div>*@
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    @if (callingMethodName == "IndexLotsForNonAuthorized")
+                                                    {
+                                                        <p style="color: gray">
+                                                            Необходимо
+                                                            <a href="@Url.Action("ChooseRole", "Account")">войти</a>
+                                                            в свою учетную запись покупателя, чтобы сделать ставку
+                                                        </p>
+                                                    }
+                                                    @if (Model.Condition.Name == "shipment_expected" && callingMethodName == "SellerProfile")
+                                                    {
+                                                        <p style="color: gray">
+                                                            Необходимо ввести трек-код посылки для подтверждения отправки лота победителю:
+                                                        </p>
+                                                    }
+                                                    @if (Model.Condition.Name == "shipment_expected" && callingMethodName == "CustomerProfile")
+                                                    {
+                                                        <p style="color: gray">
+                                                            Вы стали победителем торгов за этот лот.
+                                                            Ожидайте отправки лота продавцом
+                                                        </p>
+                                                    }
+                                                    @if (Model.Condition.Name == "active" && (callingMethodName == "CustomerProfile" || callingMethodName == "IndexLotsForCustomer"))
+                                                    {
+                                                        <p style="color: gray">
+                                                            Размер ставки
+                                                            (минимум <b style="color: black">@Model.Min_bet руб.</b>)
+                                                        </p>
+                                                    }
+                                                    @if (Model.Condition.Name == "active" && callingMethodName == "IndexLotsForSeller")
+                                                    {
+                                                        Seller seller = (Seller)ViewData["seller"];
+                                                        if (Model.Seller == seller)
+                                                        {
+                                                            <p style="color: indianred">
+                                                                Это ваш лот
+                                                            </p>
+                                                        }
+                                                        else
+                                                        {
+                                                            <p style="color: gray">
+                                                                Чтобы сделать ставку, вам необходимо войти в свою учетную запись покупателя
+                                                            </p>
+                                                        }
+                                                    }
+                                                    @if (Model.Condition.Name == "active" && callingMethodName == "SellerProfile")
+                                                    {
+                                                        <p style="color: gray">
+                                                            Торги продолжаются!
+                                                        </p>
+                                                    }
+                                                    @if (callingMethodName == "AddBetEndOfAuction")
+                                                    {
+                                                        ViewData["callingMethodName"] = "CustomerProfile";
+                                                        ViewData["currentConditionName"] = "shipment_expected";
+                                                        <p style="color: gray">
+                                                            Торги за этот лот окончены, данная ставка принята не будет! Вы можете узнать, являетесь ли вы победителем,
+                                                            <a href="@Url.Action("CustomerProfile", "Auction", new { ConditionName = "shipment_expected"})">пройдя по этой ссылке</a>
+                                                        </p>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-10">
+                                            @if (Model.Condition.Name == "active" && (callingMethodName == "CustomerProfile" || callingMethodName == "IndexLotsForCustomer"))
+                                            {
+                                                using (Ajax.BeginForm("AddBet", "Auction", null, new AjaxOptions { HttpMethod = "POST", UpdateTargetId = $"res{Model.Lot_id}" }, new { @role = "form" }))
+                                                {
+                                                    <div class="form-group">
+                                                        @Html.Hidden("lotId", Model.Lot_id, new { @class = "form-control" })
+                                                    </div>
+
+                                                    <div class="form-group">
+
+                                                        @Html.TextBox("Amount", null, new { @class = "form-control" })
+                                                    </div>
+                                                    <button type="submit" class="btn btn-primary">Поставить</button>
+                                                }
+                                            }
+                                            @if (Model.Condition.Name == "shipment_expected" && callingMethodName == "SellerProfile")
+                                            {
+                                                using (Html.BeginForm("AddShipmentForm", "Auction", new { @role = "form" }))
+                                                {
+                                                    <div class="form-group">
+                                                        @Html.Hidden("_lotId", Model.Lot_id, new { @class = "form-control" })
+                                                    </div>
+                                                    <button type="submit" class="btn btn-danger">Ввести трек-код</button>
+                                                }
+                                            }
+
+
+
+                                        </div>
+                                    </div>
+                                    @*<div>
+                                        <p>
+                                            Размер ставки
+                                            (минимум <b>@Model.Min_bet руб.</b>)
+                                        </p>
+                                    </div>
+                                    @if (Model.Condition.Name != null)
+                                    {
+                                        using (Ajax.BeginForm("AddBet", "Auction", new AjaxOptions { HttpMethod = "POST", UpdateTargetId = $"res{Model.Lot_id}" }, new { @role = "form" }))
+                                        {
+                                            <div class="form-group">
+                                                @Html.Hidden("lotId", Model.Lot_id, new { @class = "form-control" })
+                                            </div>
+
+                                            <div class="form-group">
+
+                                                @Html.TextBox("Amount", null, new { @class = "form-control" })
+                                            </div>
+
+                                            <button type="submit" class="btn btn-primary">Разместить ставку</button>
+                                        }
+                                    }*@
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+            </div>
+            }
+            else ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            {
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="panel panel-info">
+                            <div class="my-heading">
+                                <div class="row">
+                                    <div class="col-md-7">
+
+                                        <button style="padding-top: 0px;" type="button" class="btn btn-link">
+                                            <span class="glyphicon glyphicon-star-empty"> </span>
+                                        </button>
+                                        <font size="5">@Model.Name</font>
+                                        <small>
+                                            <sub style="padding: 10px; font-size: 14px; color: gray;">
+                                                В категории:
+                                                <a href="@Url.Action("IndexLots", "Auction", new { CategoryName = Model.Category.Name })">@CategoryName</a>
+                                            </sub>
+                                        </small>
+
+                                    </div>
+                                    <div class="col-md-5">
+                                        @if (Model.Bets_count > 10)
+                                        {
+                                            <div style="font-size: 18px; color: indianred;">
+                                                Всего ставок на этот лот: <b>@Model.Bets_count</b>
+                                                <span class="glyphicon glyphicon-fire"> </span>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div style="font-size: 18px; color: darkcyan;">
+                                                Всего ставок на этот лот: <b>@Model.Bets_count</b>
+                                            </div>
+                                        }
+
+
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                            <div class="panel-body">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="col-md-3">
+                                            <img alt="Bootstrap Image Preview" src="@Url.Content(Model.PictureUrl)" style="width:160px;" @*src="http://placehold.it/160x160"*@ />
+                                        </div>
+                                        <div class="col-md-5" style="padding-left: 40px;">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <p class="size" style="color: gray; padding-right: 20px;">
+                                                        @Model.Description
+                                                    </p>
+                                                </div>
+                                                <p>
+                                                    <a class="btn" href="#">Подробнее »</a>
+                                                </p>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    @*<br />*@
+                                                    <p style="padding-top: 30px;">
+                                                        <h2>@Model.Price руб.</h2>
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                            @*<br />
+
+                                                <h2>@Model.Price руб.</h2>*@
+                                        </div>
+                                        <div class="col-md-4" style="padding-left: 40px;">
+                                            <div class="row">
+                                                @*<div class="col-md-6">
+                                                        <h5 class="product-name"><strong>Текущая стоимость</strong></h5>
+                                                        <h4><small>@Model.Price</small></h4>
+                                                    </div>*@
+                                                <div class="col-md-12">
+                                                    <div class="product-name"><strong>Дата начала торгов</strong></div>
+                                                    <h4><small>@Model.Auction_start.ToShortDateString() @Model.Auction_start.ToLongTimeString()</small></h4>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                @*<div class="col-md-6">
+                                                        <h5 class="product-name"><strong>Мин ставка</strong></h5>
+                                                        <h4><small>@Model.Min_bet</small></h4>
+                                                    </div>*@
+                                                <div class="col-md-12">
+                                                    <div class="product-name"><strong>Дата окончания торгов</strong></div>
+                                                    <h4><small>@Model.Auction_end.ToShortDateString() @Model.Auction_end.ToLongTimeString()</small></h4>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                @*<div class="col-md-6">
+                                                        <h5 class="product-name"><strong>Мин ставка</strong></h5>
+                                                        <h4><small>@Model.Min_bet</small></h4>
+                                                    </div>*@
+                                                <div class="col-md-12" style="color: darkcyan;">
+                                                    <div class="product-name"><strong>Статус</strong></div>
+                                                    @if (Model.Condition.Name == "unclaimed")
+                                                    {
+                                                        <h4><small>Невостребован</small></h4>
+                                                    }
+                                                    @if (Model.Condition.Name == "payment_expected")
+                                                    {
+                                                        <h4><small>Ожидает оплаты</small></h4>
+                                                    }
+                                                    @if (Model.Condition.Name == "shipment_expected")
+                                                    {
+                                                        <h4><small>Ожидающие отправки</small></h4>
+                                                    }
+                                                    @if (Model.Condition.Name == "delivered")
+                                                    {
+                                                        <h4><small>Доставлен</small></h4>
+                                                    }
+                                                </div>
+                                            </div>
+                                            @*<div class="col-md-6">
+                                                    <div class="row">
+                                                        <div class="col-md-12">
+                                                            <h5 class="product-name"><strong>Текущая стоимость</strong></h5>
+                                                            <h4><small>@Model.Price</small></h4>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-12">
+                                                            <h5 class="product-name"><strong>Мин ставка</strong></h5>
+                                                            <h4><small>@Model.Min_bet</small></h4>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <div class="col-md-12">
+                                                            <h5 class="product-name"><strong>Дата начала торгов</strong></h5>
+                                                            <h4><small>@Model.Auction_start</small></h4>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-12">
+                                                            <h5 class="product-name"><strong>Дата окончания торгов</strong></h5>
+                                                            <h4><small>@Model.Auction_end</small></h4>
+                                                        </div>
+                                                    </div>
+                                                </div>*@
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            }
+
+
+
+

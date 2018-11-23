@@ -1,0 +1,27 @@
+﻿
+@{
+    ViewBag.Title = "AddShipmentForm";
+}
+
+<h3>Подтверждение отправки лота</h3>
+<br />
+
+@{ 
+    int lotId = (int)ViewData["lotId"];
+}
+
+@Html.ValidationSummary(false)
+@using (Html.BeginForm("AddShipment", "Auction"))
+{
+    <div class="form-group">
+        @Html.Hidden("_lotId", lotId, new { @class = "form-control" })
+    </div>
+    <div class="form-group">
+        <label>Трек-номер посылки</label>
+        @Html.TextBox("_track", null, new { @class = "form-control" })
+    </div>
+    
+    <button type="submit" class="btn btn-primary">Отправить</button>
+
+    @Html.ActionLink("Отмена", "Index", null, new { @class = "btn btn-default" })
+}

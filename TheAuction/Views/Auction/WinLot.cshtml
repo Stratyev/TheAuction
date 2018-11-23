@@ -1,0 +1,13 @@
+﻿@model CodeFirst.Lot
+
+@{
+    ViewBag.Title = "WinLot";
+}
+@using (Html.BeginForm("AddCheck", "Auction"))
+{
+    <div class="form-group">
+        @Html.Hidden("lotId", Model.Lot_id, new { @class = "form-control" })
+    </div>
+    <button type="submit" class="btn btn-primary">Выиграть лот</button>
+}
+

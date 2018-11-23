@@ -1,0 +1,12 @@
+﻿@using CodeFirst
+@model List<Figure>
+@{
+    ViewBag.Title = "IndexFigures";
+}
+
+<h2>IndexFigures</h2>
+
+    @foreach (Figure figure in Model)
+    {
+        @Html.Partial("Figure", figure)
+    }

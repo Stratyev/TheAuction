@@ -1,0 +1,77 @@
+﻿@using CodeFirst
+@model CodeFirst.Seller
+@{
+    Seller seller = (Seller)ViewData["seller"];
+    int lotsCount = (int)ViewData["lotsCount"];
+}
+
+<style>
+    .border {
+        clear: both;
+        background: #fff;
+        -moz-border-radius: 10px;
+        -webkit-border-radius: 2px;
+        -moz-box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3);
+        -webkit-box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3);
+        z-index: 90;
+    }
+</style>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-9">
+            <div class="panel panel-info border" @*style="border-color:white;"*@>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="col-md-4">
+                                <img alt="Bootstrap Image Preview" src="@Url.Content(seller.Figure.PictureUrl)" style="width:260px;" />
+                            </div>
+                            <div class="col-md-4" style="padding-left:40px;">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="product-name"><strong>Дата регистрации</strong></div>
+                                        <h4><small>@seller.Figure.AppUser.Reg_date</small></h4>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="product-name"><strong>Город</strong></div>
+
+                                        <h4><small>@seller.Figure.Location.Name</small></h4>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="product-name"><strong>Количество размещенных за все время лотов</strong></div>
+                                        <h4><small>@lotsCount</small></h4>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4" style="padding-left:40px;">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="product-name"><strong>E-mail</strong></div>
+                                        <h4><small>@seller.Figure.AppUser.Email</small></h4>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="product-name"><strong>Фио</strong></div>
+
+                                        <h4><small>@seller.Figure.Surname @seller.Figure.Name @seller.Figure.Patronymic</small></h4>
+                                    </div>
+                                </div>
+                            
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+

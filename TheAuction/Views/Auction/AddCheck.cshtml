@@ -1,0 +1,44 @@
+﻿@*@model TheAuction.Models.CallingMethodName_Lot*@
+@model CodeFirst.Lot
+
+@section Scripts
+{
+    @*Scripts.Render работает только в _Layout. Писать скрипт прямо в теге можно, если он на чистом JS, а здесь JQuery*@
+    <script src="@Url.Content("~/scripts/auto-click-submit-button.js")"></script>
+}
+
+@{
+    string CallingMethodName = (string)ViewData["callingMethodName"];
+    string CurrentConditionName = (string)ViewData["currentConditionName"];
+}
+@using (Ajax.BeginForm("AddCheck", "Auction", null, new AjaxOptions { HttpMethod = "POST", UpdateTargetId = $"auto{Model.Lot_id}" },
+    new { @role = "form", id = "addcheck" }))
+
+{
+    <div class="form-group">
+        @Html.Hidden("_lotId", Model.Lot_id, new { @class = "form-control" })
+    </div>
+    <div class="form-group">
+        @Html.Hidden("_callingMethodName", CallingMethodName, new { @class = "form-control" })
+    </div>
+    <div class="form-group">
+        @Html.Hidden("_currentConditionName", CurrentConditionName, new { @class = "form-control" })
+    </div>
+
+    <button style="display:none;" type="submit" class="btn btn-primary" id="addcheckmodal">Выиграть</button>
+    @*<button class="btn btn-primary" role="button" type="button" onclick="submitParentForm($(this))">Submit parent from Jquery</button>*@
+    @*<h3>@Model.Lot_id</h3>*@
+}
+
+
+@*<script>document.getElementById("mybutton").trigger("click");</script>*@
+
+@*<script>document.getElementById("addcheck").submit();</script>*@
+
+@*<script>
+            (function() {
+                ('form#ajaxForm').find('a.submit-link').click( function() {
+                    ('form#ajaxForm').trigger('submit');
+                }).show();
+            })
+    </script>*@

@@ -1,0 +1,45 @@
+﻿
+@{
+    ViewBag.Title = "ChooseRole";
+}
+<div class="row">
+    <div class="text-center" style="padding-right:4px;">
+        <h1>Авторизация</h1>
+        <br />
+    </div>
+</div>
+
+<div class="row">
+    <div class="text-center" style="padding-right:25px;">
+        <h4 style="color: gray;">Войти как:</h4>
+        <br />
+    </div>
+</div>
+    
+    @*<a href="/Account/LoginAsCustomer">Войти как покупатель</a>
+        <a href="/Account/LoginAsSeller">Войти как продавец</a>*@
+    <div class="row">
+        <div class="text-center" style="padding-right:25px;">
+            <a href="@Url.Action("LoginAsCustomer", "Account")" class="btn btn-xs" style="font-size: 20px; font-weight: bold;">
+                <span class="glyphicon glyphicon-shopping-cart" style="font-size: 15px;" aria-hidden="true"></span>
+                 Покупатель
+            </a>
+        </div>
+    </div>
+<div class="row">
+    <div class="text-center" style="padding-right:25px;">
+        <h5 style="color: gray;">или</h5>
+    </div>
+</div>
+        <div class="row">
+            <div class="text-center" style="padding-right:32px;">
+                <a href="@Url.Action("LoginAsSeller", "Account")" class="btn btn-xs" style="font-size: 20px; font-weight: bold;">
+                    <span class="glyphicon glyphicon-usd" style="font-size: 15px;" aria-hidden="true"></span>
+                    @*<span class="glyphicon glyphicon-usd" style="font-size: 15px;" aria-hidden="true"></span>*@
+                    Продавец
+                </a>
+            </div>
+        </div>
+
+
+

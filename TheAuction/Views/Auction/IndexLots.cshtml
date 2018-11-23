@@ -1,0 +1,304 @@
+﻿@using TheAuction.Models
+@using CodeFirst
+@model List<Lot>
+@{
+                /**/
+
+                ViewBag.Title = "IndexLots";
+}
+
+@*<h2>IndexLots</h2>*@
+@section Scripts
+{
+    @*Scripts.Render работает только в _Layout. Писать скрипт прямо в теге можно, если он на чистом JS, а здесь JQuery*@
+
+    @*<script src="@Url.Content("~/Scripts/jquery-1.10.2.min.js")"></script>
+        <script src="@Url.Content("~/Scripts/jquery.signalR-2.3.0.min.js")"></script>
+        <script src="@Url.Content("~/signalr/hubs")"></script>
+        <script src="@Url.Content("~/Scripts/update-lot-view.js")"></script>*@
+}
+
+@{
+    string callingMethodName = (string)ViewData["callingMethodName"];
+    string categoryName = (string)ViewData["CategoryName"];
+    string sortBy = (string)ViewData["sortBy"];
+    int currPage = (int)ViewData["currPage"];
+    int pagesCount = (int)ViewData["pagesCount"];
+    int pagesLeft = pagesCount - currPage;
+}
+
+<div class="row">
+    <div class="col-md-6">
+        @if (Model.Count == 0)
+        {
+            <h4 style="padding-top: 15px;">Лотов в этой категории пока нет</h4>
+        }
+        else
+        {
+            <h4 style="padding-top: 15px; color:gray">ЗДЕСЬ МОГЛА БЫ БЫТЬ ВАША РЕКЛАМА (НО НЕ БУДЕТ)</h4>
+            <br />
+        }
+    </div>
+    <div class="col-md-6">
+
+        <ul class="nav navbar-nav navbar-right" style="padding-top: 5px;">
+            @*<li>
+                    <div style="padding-top: 13px; font-size:15px;">Выберите категорию: </div>
+                </li>*@
+
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                    @*<span class="glyphicon glyphicon-user" style="font-size: 12px;" aria-hidden="true"></span>*@
+                    @if (categoryName == "all" || categoryName == null)
+                    {<span>Все категории</span>            }
+                    @if (categoryName == "auto")
+                    {<span>Авто/Мото</span>            }
+                    @if (categoryName == "accessories")
+                    {<span>Аксессуары и украшения</span>            }
+                    @if (categoryName == "antiques")
+                    {<span>Антиквариат</span>            }
+                    @if (categoryName == "musical")
+                    {<span>Музыкальные инструменты</span>            }
+                    @if (categoryName == "technique")
+                    {<span>Электроника и бытовая техника</span>            }
+                    @if (categoryName == "clothes")
+                    {<span>Одежда и обувь</span>            }
+                    @if (categoryName == "others")
+                    {<span>Прочее</span>            }
+
+                    <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu" role="menu" style="color:ActiveBorder;">
+                    <li>
+                        <a href="~/Auction/IndexLots">
+                            Все категории
+                            @*<span class="glyphicon glyphicon-user" style="font-size: 10px;" aria-hidden="true"></span>*@
+                        </a>
+                    </li>
+                    <li>
+                        <a href="@Url.Action("IndexLots", "Auction", new {categoryName="auto"}, null)">
+                            Авто/Мото
+                            @*<span class="glyphicon glyphicon-user" style="font-size: 10px;" aria-hidden="true"></span>*@
+                        </a>
+                    </li>
+                    <li>
+                        <a href="@Url.Action("IndexLots", "Auction", new {categoryName="accessories"}, null)">
+                            Аксессуары и украшения
+                            @*<span class="glyphicon glyphicon-user" style="font-size: 10px;" aria-hidden="true"></span>*@
+                        </a>
+                    </li>
+                    <li>
+                        <a href="@Url.Action("IndexLots", "Auction", new {categoryName="antiques"}, null)">
+                            Антиквариат
+                            @*<span class="glyphicon glyphicon-user" style="font-size: 10px;" aria-hidden="true"></span>*@
+                        </a>
+                    </li>
+                    <li>
+                        <a href="@Url.Action("IndexLots", "Auction", new {categoryName="musical"}, null)">
+                            Музыкальные инструменты
+                            @*<span class="glyphicon glyphicon-user" style="font-size: 10px;" aria-hidden="true"></span>*@
+                        </a>
+                    </li>
+                    <li>
+                        <a href="@Url.Action("IndexLots", "Auction", new {categoryName="technique"}, null)">
+                            Электроника и бытовая техника
+                            @*<span class="glyphicon glyphicon-user" style="font-size: 10px;" aria-hidden="true"></span>*@
+                        </a>
+                    </li>
+                    <li>
+                        <a href="@Url.Action("IndexLots", "Auction", new {categoryName="clothes"}, null)">
+                            Одежда и обувь
+                            @*<span class="glyphicon glyphicon-user" style="font-size: 10px;" aria-hidden="true"></span>*@
+                        </a>
+                    </li>
+                    <li>
+                        <a href="@Url.Action("IndexLots", "Auction", new {categoryName="others"}, null)">
+                            Прочее
+                            @*<span class="glyphicon glyphicon-user" style="font-size: 10px;" aria-hidden="true"></span>*@
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                    @*<span class="glyphicon glyphicon-user" style="font-size: 12px;" aria-hidden="true"></span>*@
+                    @if (sortBy == "Price" || sortBy == null)
+                    {<span>По возрастанию стоимости</span>            }
+                    @if (sortBy == "Price descending")
+                    {<span>По убыванию стоимости</span>            }
+                    @if (sortBy == "Auction_end")
+                    {<span>По возрастанию даты завершения торгов</span>            }
+                    @if (sortBy == "Auction_end descending")
+                    {<span>По убыванию даты завершения торгов</span>            }
+                    @if (sortBy == "Bets_count")
+                    {<span> По возрастанию популярности</span>            }
+                    @if (sortBy == "Bets_count descending")
+                    {<span>По убыванию популярности</span>            }
+
+                    <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu" role="menu" style="color:ActiveBorder;">
+                    <li>
+                        @*categoryName=categoryName because name of the category determines by the upper dropdown list*@
+                        <a href="@Url.Action("IndexLots", "Auction", new {categoryName=categoryName, sortBy="Price"}, null)">
+                            По возрастанию стоимости
+                        </a>
+                    </li>
+                    <li>
+                        <a href="@Url.Action("IndexLots", "Auction", new {categoryName=categoryName, sortBy="Price descending"}, null)">
+                            По убыванию стоимости
+                        </a>
+                    </li>
+                    <li>
+                        <a href="@Url.Action("IndexLots", "Auction", new {categoryName=categoryName, sortBy="Auction_end"}, null)">
+                            По возрастанию даты завершения торгов
+                        </a>
+                    </li>
+                    <li>
+                        <a href="@Url.Action("IndexLots", "Auction", new {categoryName=categoryName, sortBy="Auction_end descending"}, null)">
+                            По убыванию даты завершения торгов
+                        </a>
+                    </li>
+                    <li>
+                        <a href="@Url.Action("IndexLots", "Auction", new {categoryName=categoryName, sortBy="Bets_count"}, null)">
+                            По возрастанию популярности
+                        </a>
+                    </li>
+                    <li>
+                        <a href="@Url.Action("IndexLots", "Auction", new {categoryName=categoryName, sortBy="Bets_count descending"}, null)">
+                            По убыванию популярности
+                            @*<span class="glyphicon glyphicon-user" style="font-size: 10px;" aria-hidden="true"></span>*@
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+</div>
+@if (Model.Count > 0)
+{
+    <div class="row" style="font-size: larger">
+        <div class="col-md-12">
+            @{
+                int dispPagesCount = 9;
+                int middle = 7;
+
+                if (pagesCount <= dispPagesCount)
+                {
+                    <p>
+                        @for (int i = 1; i <= pagesCount; i++)
+                        {
+                            if (currPage == i)
+                            {
+                                @i
+                            }
+                            else
+                            {
+                                <a href="@Url.Action("IndexLots", "Auction", new {categoryName=categoryName, sortBy="Price", currPage=i}, null)">
+                                    @i
+                                </a>
+                            }
+                        }
+                    </p>
+                }
+                else
+                {
+                    int[] dispPages = new int[dispPagesCount];
+                    int index = 0;
+                    // До середины списка страниц
+                    if (currPage < middle)
+                    {
+                        int leftEdge = 1, rightEdge = dispPagesCount;
+                        for (int pageNum = leftEdge; pageNum <= rightEdge; pageNum++)
+                        {
+                            dispPages[index] = pageNum;
+                            index++;
+                        }
+                    }
+                    // После середины, но не в конце
+                    if (currPage >= middle && !(currPage + 4 >= pagesCount))
+                    {
+                        int leftEdge = currPage - 4;
+                        int rightEdge = currPage + 4;
+                        for (int pageNum = leftEdge; pageNum <= rightEdge; pageNum++)
+                        {
+                            dispPages[index] = pageNum;
+                            index++;
+                        }
+                    }
+                    // В конце списка
+                    if (currPage + 4 >= pagesCount)
+                    {
+                        int leftEdge = pagesCount - dispPagesCount + 1, rightEdge = pagesCount;
+                        for (int pageNum = leftEdge; pageNum <= rightEdge; pageNum++)
+                        {
+                            dispPages[index] = pageNum;
+                            index++;
+                        }
+                    }
+                    <p>
+                        @if (currPage >= middle)
+                        {
+                            <a href="@Url.Action("IndexLots", "Auction", new {categoryName=categoryName, sortBy="Price", currPage=1}, null)">
+                                1..
+                            </a>
+                        }
+                        @foreach (int pageNum in dispPages)
+                        {
+                            if (currPage == pageNum)
+                            {
+                                @pageNum
+                            }
+                            else
+                            {
+                                if (pageNum == 0)
+                                {
+
+                                }
+                                else
+                                {
+                                    <a href="@Url.Action("IndexLots", "Auction", new {categoryName=categoryName, sortBy="Price", currPage=pageNum}, null)">
+                                        @pageNum
+                                    </a>
+                                }
+                            }
+                        }
+                        @if (currPage + 4 < pagesCount)
+                        {
+                            <a href="@Url.Action("IndexLots", "Auction", new {categoryName=categoryName, sortBy="Price", currPage=pagesCount}, null)">
+                                ..@pagesCount
+                            </a>
+                        }
+                    </p>
+                }
+            }
+
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            @Html.Partial("IndexLotsPartial", Model)
+        </div>
+    </div>
+
+    <div class="row" style="font-size: larger">
+        <div class="col-md-12">
+            @for (int i = 1; i <= pagesCount; i++)
+            {
+                if (currPage == i)
+                {
+                    @i
+                }
+                else
+                {
+                    <a href="@Url.Action("IndexLots", "Auction", new {categoryName=categoryName, sortBy="Price", currPage=i}, null)">
+                        @i
+                    </a>
+                }
+            }
+        </div>
+    </div>
+
+
+}

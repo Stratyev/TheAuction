@@ -1,0 +1,202 @@
+﻿@using CodeFirst
+@using TheAuction.Models
+@model List<Lot>
+@{
+    ViewBag.Title = "CustomerProfile";
+}
+@{
+    Customer customer = (Customer)ViewData["customer"];
+    List<string> conditionsNames = (List<string>)ViewData["conditionsNames"];
+}
+
+@*<h2>CustomerProfile</h2>
+
+    <br />
+    <br />*@
+
+@{
+    List<SelectListItem> selectListItems = new List<SelectListItem>()
+          { new SelectListItem { Text = "Все лоты", Value = "all" } };
+
+    int activeCounter = 0, unclaimedCounter = 0, payment_expectedCounter = 0, shipment_expectedCounter = 0, deliveredCounter = 0;
+    foreach (string s in conditionsNames)
+    {
+        if (s == "active" && activeCounter == 0)
+        {
+            selectListItems.Add(new SelectListItem { Text = "Активные", Value = "active" });
+            activeCounter = 1;
+        }
+
+        if (s == "unclaimed" && unclaimedCounter == 0)
+        {
+            selectListItems.Add(new SelectListItem { Text = "Невостребованные", Value = "unclaimed" });
+            unclaimedCounter = 1;
+        }
+        if (s == "payment_expected" && payment_expectedCounter == 0)
+        {
+            selectListItems.Add(new SelectListItem { Text = "Ожидающие оплаты", Value = "payment_expected" });
+            payment_expectedCounter = 1;
+        }
+        if (s == "shipment_expected" && shipment_expectedCounter == 0)
+        {
+            selectListItems.Add(new SelectListItem { Text = "Ожидающие отправки", Value = "shipment_expected" });
+            shipment_expectedCounter = 1;
+        }
+        //if (s == "shipped" && shippedCounter == 0)
+        //{
+        //    selectListItem.Add(new SelectListItem { Text = "Отправленные", Value = "shipped" }); //*Отправлен* Пока такого статуса нет, т.к. нет реальной доставки
+        //    shippedCounter = 1;
+        //}
+        if (s == "delivered" && deliveredCounter == 0)
+        {
+            selectListItems.Add(new SelectListItem { Text = "Доставленные", Value = "delivered" });
+            deliveredCounter = 1;
+        }
+    }
+    SelectList selectList = new SelectList(selectListItems, "Value", "Text");
+}
+<h3><b style="font-size:35px;">@customer.Figure.AppUser.UserName</b>, это ваш личный кабинет <b>покупателя</b></h3>
+<div class="row">
+    @Html.Partial("CustomerProfileCard", customer)
+</div>
+
+    @using (Html.BeginForm("CustomerProfileFiltered", "Auction", new { role = "form" }))//id устанавливать сюда бесполезно, не прописывается
+    {
+        <div class="row">
+            <div class="col-md-3">
+                <div class="form-group" style="padding-top: 10px;">
+                    @Html.DropDownList("conditionName", selectList, null, new { @class = "form-control", onchange = "submitToCustomerProfile()" })
+                </div>
+            </div>
+            @*<div class="col-md-9">
+                    <div style="padding-top: 10px;"><a class="btn btn-default" href="@Url.Action("AddLot","Auction")">Новый лот</a></div>
+                </div>*@
+        </div>
+        if (Model.Count == 0)
+        {
+            <div class="row">
+                <h4 style="padding-left: 30px;">Лотов пока нет</h4>
+            </div>
+        }
+
+        @*if (Model.Count > 0)
+            {
+                if ((string)ViewData["currentconditionName"] == "all")
+                {
+                    <h3>Все лоты:</h3>
+                }
+                if ((string)ViewData["currentconditionName"] == "active")
+                {
+                    <h3>Лоты, участвующие в торгах:</h3>
+                }
+                if ((string)ViewData["currentconditionName"] == "unclaimed")
+                {
+                    <h3>Невостребованные лоты:</h3>
+                }
+                if ((string)ViewData["currentconditionName"] == "payment_expected")
+                {
+                    <h3>Лоты, ожидающие оплаты победителем торгов:</h3>
+                }
+                if ((string)ViewData["currentconditionName"] == "shipment_expected")
+                {
+                    <h3>Лоты, ожтдающие отправки победителю торгов:</h3>
+                }
+                if ((string)ViewData["currentconditionName"] == "shipped")
+                {
+                    <h3>Лоты, отправленные победителям торгов:</h3>
+                }
+            }
+            else
+            {
+                <h3>Лотов с таким статусом пока нет</h3>
+            }*@
+    }
+    <br />
+    @Html.Partial("IndexLotsForProfilePartial", Model)
+
+
+    @*<div class="container">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div class="panel panel-info">
+                                    <div class="panel-heading">
+                                        <div class="panel-title">
+                                            <div class="row">
+                                                <div class="col-xs-6">
+                                                    <h5>Все лоты</h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="panel-body">
+                                        <div class="row">
+                                            <div class="col-xs-2">
+                                                <img class="img-responsive" src="http://placehold.it/100x70">
+                                            </div>
+                                            <div class="col-xs-2">
+                                                <h4 class="product-name"><strong>Product name</strong></h4><h4><small>Product description</small></h4>
+                                            </div>
+                                            <div class="col-xs-2">
+                                                <h4 class="product-name"><strong>Product name</strong></h4><h4><small>Product description</small></h4>
+                                            </div>
+
+
+                                                @using (Ajax.BeginForm("AddBet", "Auction", new AjaxOptions { HttpMethod = "POST", UpdateTargetId = $"res" }, new { @role = "form" }))
+                                                {
+                                                    <div class="col-xs-2">
+                                                        <div class="form-group">
+                                                            @Html.Hidden("lotId", "1", new { @class = "form-control" })
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label>Размер ставки</label>
+                                                            <label>(не меньше @( "1"))</label>
+                                                            @Html.TextBox("Amount", null, new { @class = "form-control" })
+                                                        </div>
+
+                    <button type="submit" class="btn btn-primary">Разместить ставку</button>
+                </div>
+                }
+
+                <div class="col-xs-6">
+                        <div class="col-xs-6 text-right">
+                            <h6><strong>25.00 <span class="text-muted">x</span></strong></h6>
+                        </div>
+                        <div class="col-xs-4">
+                            <input type="text" class="form-control input-sm" value="1">
+                        </div>
+                        <div class="col-xs-2">
+                            <button type="button" class="btn btn-default btn-xs">
+                                <span> Поставить</span>
+                            </button>
+                        </div>
+                    </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-2">
+
+                </div>
+                <div class="col-xs-2">
+                    <h4 class="product-name"><strong>Product name</strong></h4><h4><small>Product description</small></h4>
+                </div>
+                <div class="col-xs-2">
+                    <h4 class="product-name"><strong>Product name</strong></h4><h4><small>Product description</small></h4>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+
+            </div>
+        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>*@
+
+
+
+    <script>
+        function submitToCustomerProfile() {
+            document.getElementsByTagName("form")[0].submit();
+        }
+    </script>
