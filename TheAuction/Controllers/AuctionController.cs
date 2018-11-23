@@ -13,7 +13,7 @@ using Microsoft.Owin;
 using System.Threading;
 using CodeFirst;
 using System.Text;
-// eee git
+
 namespace TheAuction.Controllers
 {
     public class AuctionController : Controller
